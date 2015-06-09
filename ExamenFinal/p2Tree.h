@@ -90,6 +90,22 @@ public:
 
 		list->add(this);
 	}
+	unsigned int CalcAdditionRecursive(){
+
+		p2List_item<p2TreeNode*>* item = childs.start;
+		p2TreeNode<tdata>* node = parent;
+		unsigned int result = 0;
+		for (; item != NULL; item = item->next) {
+			result += node->data;
+			node = (item != NULL) ? item->data : NULL;
+			item->data->CalcAdditionRecursive();
+		}
+			
+
+		return result;
+			
+
+	}
 
 
 	p2TreeNode<tdata>* FindRecursive(const tdata& node)
@@ -155,6 +171,36 @@ public:
 	void InOrderRecursive(p2List<p2TreeNode<tdata>*>* list)
 	{
 		trunk.InOrderRecursive(list);
+	}
+
+	unsigned int CalcAdditionRecursive(){
+
+		unsigned int result = 0;
+			
+		trunk.CalcAdditionRecursive();
+
+		return result;
+	}
+
+	unsigned int CalcAdditionIterative(){
+
+		Stack<p2TreeNode<tdata>*> stack;
+		p2TreeNode<tdata>* node = &trunk;
+		unsigned int result = 0;
+
+		while (node != NULL || stack.pop(node))
+		{
+			result += node->data;
+
+			p2List_item<p2TreeNode<tdata>*>* item = node->childs.end;
+			for (; item != node->childs.start; item = item->prev)
+				stack.pushBack(item->data);
+
+			node = (item != NULL) ? item->data : NULL;
+		}
+		return result;
+
+
 	}
 
 	void PreOrderIterative(p2List<p2TreeNode<tdata>*>* list)

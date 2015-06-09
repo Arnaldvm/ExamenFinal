@@ -238,6 +238,29 @@ public:
 		return removed;
 	}
 
+	void Flip()
+	{
+		VALUE* start = &data[0];
+		VALUE* end = &data[num_elements - 1];
+
+		while (start < end)
+			SWAP(*start++, *end--);
+	}
+
+	const p2DynArray<VALUE>& operator += (const p2DynArray<VALUE>& arr)
+	{
+		if (arr.data != NULL) {
+			
+	
+			for (unsigned int i = 0; i < arr.Count(); i++) {
+				PushBack(arr[i]);
+			}
+
+		}
+	
+		return(*this);
+	}
+
 private:
 
 	// Private Utils

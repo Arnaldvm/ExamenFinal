@@ -320,5 +320,49 @@ public:
 		}
 		return (-1);
 	}
+
+	bool InsertAfter(unsigned int position, const p2List<tdata>& list){
+
+		if (position > size)
+			return false;
+		if (start == NULL){
+			start = list.start;
+			end = list.end;
+			size = list.size;
+			return true;
+		}
+		p2List_item<tdata>* tmp = start;
+		for (unsigned int i = 0; i < position; i++)
+			tmp = tmp->next;
+		p2List_item<tdata>* tmp2 = list.start;
+		p2List_item<tdata>* tmp3 = tmp->next;
+		
+		tmp->next = tmp2;
+		tmp2->prev = tmp;
+		tmp3->prev = list.end;
+		list.end->next = tmp3;
+		size += list.count();
+		return true;
+		
+			
+	}
+	/*bool Insert(const p2DynArray<VALUE>& array, unsigned int position)
+	{
+		if (position > num_elements)
+			return false;
+
+		if (num_elements + array.num_elements > mem_capacity)
+			Alloc(num_elements + array.num_elements + 1);
+
+		for (unsigned int i = position; i < position + array.num_elements; ++i)
+		{
+			data[i + array.num_elements] = data[i];
+			data[i] = array[i - position];
+			++num_elements;
+		}
+
+		return true;
+	}*/
+
 };
 #endif /*__p2List_H__*/

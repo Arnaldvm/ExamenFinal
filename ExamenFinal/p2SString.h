@@ -216,52 +216,125 @@ public:
 		return(*this);
 	}
 
-	int countStrings(const char* a)const
+	unsigned int Find(const char* string) const
 	{
-		unsigned int counter = 0;
+		unsigned int ret = 0;
 
-		if (a != NULL)
+		if (string != NULL)
 		{
-			unsigned int len = strlen(a);
-			for (unsigned int i = 0; i < size - len; i++)
+			unsigned int len = strlen(string);
+
+			for (unsigned int i = 0; i < size - len; ++i)
 			{
-				if (strncmp(a, &str[i], len) == 0)
+				if (strncmp(string, &str[i], len) == 0)
 				{
 					i += len;
-					++counter;
+					++ret;
 				}
 			}
 		}
-		return counter;
+
+		return ret;
 	}
 
-	//Clean
+	
+	unsigned int Substitute(const char* src, const char *dst)
+	{
+		assert(src);
+		assert(dst);
 
+		unsigned int instances = Find(src);
+
+		if (instances > 0)
+		{
+			unsigned int src_len = strlen(src);
+			unsigned int dst_len = strlen(dst);
+			unsigned int diff = dst_len - src_len;
+			unsigned int needed_size = 1 + strlen(str) + (diff * instances);
+
+			if (size < needed_size)
+			{
+				char* tmp = str;
+				Alloc(needed_size);
+				strcpy_s(str, size, tmp);
+				delete tmp;
+			}
+
+			for (unsigned int i = 0; i < size - src_len; ++i)
+			{
+				if (strncmp(src, &str[i], src_len) == 0)
+				{
+					// make room
+					for (unsigned int j = strlen(str) + diff; j > i + diff; --j)
+					{
+						str[j] = str[j - diff];
+					}
+
+					// copy
+					for (unsigned int j = 0; j < dst_len; ++j)
+					{
+						str[i++] = dst[j];
+					}
+				}
+			}
+
+		}
+
+		return instances;
+	}
+
+	
 	void trim()
 	{
 		int emptyBegining = 0;
-		//final
+		
 		for (int i = size; str[i] == ' '; i--)
 			str[i] = '\0';
 
-		//principi
 		for (int j = 0; str[j] == ' '; j++)
 			emptyBegining++;
 	}
 
 	void opTrim()
 	{
-		//right
+		
 		char* end = str + size;
 		while (*--end == ' ') *end = '\0';
 
-		//Left
 		char* start = str;
 		while (*++start == ' ');
 
 		for (int i = 0; i < Length() + 1; i++)
 			str[i] = start[i];
 	}
+
+
+	//-----------EXAMEN FINAL------------------------
+
+	void Cut(const unsigned int first, const unsigned int last){
+
+		assert(first < size, last < size);
+		
+		unsigned int gap = last - first;
+		if (last != 0) {
+			for (unsigned int i = 0; i <= gap; i++) {
+				str[first + i] = str[last + i + 1];
+				size--;
+			
+			}
+		}
+		if (last == 0){
+			for (unsigned int i = size; i > first + 1; i--) {
+				size--;
+			}
+		}
+
+		str[size - 1] = '\0';
+		
+		
+
+	}
+
 
 
 private:
